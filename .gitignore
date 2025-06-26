@@ -1,2 +1,18 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.ipynb_checkpoints
+
+# Archivos temporales
+*.log
+*.tmp
+*.bak
+
+# Videos
+*.mp4
+
+# Ignorar metadatos de paquetes instalados
+components_tp_robotica.egg-info/
+
 # Enviroment
 venv_robotica/
