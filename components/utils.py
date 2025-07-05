@@ -2,61 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-def fkine_planar(q, l1=1.0, l2=1.0):
-    q1, q2 = q
-    x0, y0 = 0, 0
-    x1 = l1 * np.cos(q1)
-    y1 = l1 * np.sin(q1)
-    x2 = x1 + l2 * np.cos(q1 + q2)
-    y2 = y1 + l2 * np.sin(q1 + q2)
-    return np.array([[x0, y0], [x1, y1], [x2, y2]])
 
-def generar_video_trayectoria(tg_q, nombre_archivo='robot_trajectory.mp4',
-                              export_fps=60, sim_dt=1e-3,
-                              l1=1.0, l2=1.0):
-    """
-    Genera un video animado de la trayectoria de un robot planar de 2 DOF.
-    
-    Parámetros:
-        tg_q           : np.ndarray de forma (N, 2) con las configuraciones articulares
-        nombre_archivo : str, nombre del archivo de salida (formato .mp4)
-        export_fps     : int, cuadros por segundo del video
-        sim_dt         : float, paso de integración usado en la simulación
-        l1, l2         : float, longitudes de los eslabones del robot
-    """
-    skip = int(1 / (export_fps * sim_dt))
-
-    fig, ax = plt.subplots()
-    line, = ax.plot([], [], 'o-', lw=4)
-    ax.set_xlim(-l1 - l2 - 0.5, l1 + l2 + 0.5)
-    ax.set_ylim(-l1 - l2 - 0.5, l1 + l2 + 0.5)
-    ax.set_aspect('equal')
-    ax.grid()
-    ax.set_title("Animación de trayectoria del robot")
-
-    def init():
-        line.set_data([], [])
-        return line,
-
-    def update(i):
-        q = tg_q[i]
-        points = fkine_planar(q, l1, l2)
-        line.set_data(points[:, 0], points[:, 1])
-        return line,
-
-    ani = animation.FuncAnimation(
-        fig,
-        update,
-        frames=range(0, len(tg_q), skip),
-        init_func=init,
-        blit=True,
-        interval=1000 / export_fps
-    )
-
-    ani.save(nombre_archivo, writer='ffmpeg', fps=export_fps)
-    print(f"✅ Video guardado como '{nombre_archivo}'")
-
-def generar_video_trayectoria(tg_q, nombre_archivo='robot_trajectory.mp4',
+def generar_video_trayectoria(dp,tg_q, nombre_archivo='robot_trajectory.mp4',
                               export_fps=60, sim_dt=1e-3,
                               l1=1.0, l2=1.0):
     """
@@ -93,7 +40,15 @@ def generar_video_trayectoria(tg_q, nombre_archivo='robot_trajectory.mp4',
 
     def update(i):
         q = tg_q[i]
-        points = fkine_planar(q, l1, l2)
+        joints_T = dp.fkine_all(q)
+        T1 = np.array(joints_T[0])
+        p1 = [T1[0, 3], T1[1, 3]]
+        T2 = np.array(joints_T[1])
+        p2 = [T2[0, 3], T2[1, 3]]
+        T3 = np.array(joints_T[2])
+        p3 = [T3[0, 3], T3[1, 3]]
+
+        points = np.array([p1, p2, p3])
 
         # Actualiza el robot
         line.set_data(points[:, 0], points[:, 1])
