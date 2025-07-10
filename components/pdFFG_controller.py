@@ -35,10 +35,8 @@ def pdFF_control(robot, t, q, qd, *, dp, params, kp, kd, dt, q_ref, qd_ref, qdd_
     step = round(t / dt)
     step = min(step, q_ref.shape[0] - 1)
     q_ref_i = q_ref[step]
-    qd_ref_i = qd_ref[step]
-    qdd_ref_i = qdd_ref[step]
 
-    G = dp.rne(q_ref_i,qd_ref_i,qdd_ref_i,gravity=np.array([0,-9.8,0]))  # Torque gravitacional en la postura de referencia
+    G = dp.gravload(q_ref_i)  # Torque gravitacional en la postura de referencia
 
     N = np.array([params['N1'], params['N2']]) 
     KM = np.array([params['KM1'], params['KM2']])
@@ -53,7 +51,7 @@ def pdFF_control(robot, t, q, qd, *, dp, params, kp, kd, dt, q_ref, qd_ref, qdd_
     return Q_act
 
 
-def make_pdFF_controller(dp, params, dt, kp, kd, q_ref, qd_ref, qdd_ref):
+def make_pdFFG_controller(dp, params, dt, kp, kd, q_ref, qd_ref = None, qdd_ref = None):
     """
     Crea una función de control PD con compensación de gravedad preconfigurada.
 
@@ -78,5 +76,5 @@ def make_pdFF_controller(dp, params, dt, kp, kd, q_ref, qd_ref, qdd_ref):
         Función de control con interfaz (robot, t, q, qd) → torques.
     """
     return lambda robot, t, q, qd: pdFF_control(
-        robot, t, q, qd, dp=dp, params=params, dt=dt, kp=kp, kd=kd, q_ref=q_ref, qd_ref=qd_ref, qdd_ref=qdd_ref
+        robot, t, q, qd, dp=dp, params=params, dt=dt, kp=kp, kd=kd, q_ref=q_ref, qd_ref = qd_ref, qdd_ref = qdd_ref
     )

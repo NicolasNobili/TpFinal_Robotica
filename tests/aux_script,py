@@ -1,0 +1,17 @@
+import os
+import numpy as np
+import roboticstoolbox as rtb
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+# Módulos personalizados del proyecto
+from components.params import PARAMS
+from components.utils import (
+    generar_video_trayectoria,
+    generar_escalon_suave,
+    graficar_dinamica
+)
+from components.dp_model import dp
+from components import pd_controller
+
+print(PARAMS)

@@ -1,7 +1,7 @@
 import numpy as np
 
-def pd_control(robot, t, q, qd, *, dp, params, kp, kd, q_ref, dt):
-    """
+def pd_control(robot, t, q, qd, *, dp, params, kp, kd, dt, q_ref, qd_ref, qdd_ref):
+    """       
     Controlador PD (Proporcional-Derivativo) para seguimiento de trayectoria articular
     de un sistema de doble péndulo definido por un modelo DH.
 
@@ -37,13 +37,18 @@ def pd_control(robot, t, q, qd, *, dp, params, kp, kd, q_ref, dt):
     step = min(step, q_ref.shape[0] - 1)
     q_ref_i = q_ref[step]
 
+    N = np.array([params['N1'], params['N2']]) 
+    KM = np.array([params['KM1'], params['KM2']])
+
     # Aquí podrías usar dp y params si quisieras hacer un control más avanzado
     # Por ahora, sólo aplicamos el control PD clásico
-    Q = np.dot(kp, (q_ref_i - q)) - np.dot(kd, qd)
+    U = np.dot(kp, (q_ref_i - q)) - np.dot(kd, qd)
+
+    Q = N * KM * U
     return Q
 
 
-def make_pd_controller(dp, params, dt, kp, kd, q_ref):
+def make_pd_controller(dp, params, dt, kp, kd, q_ref, qd_ref = None, qdd_ref = None):
     """
     Crea una función de control PD preconfigurada con parámetros fijos para el doble péndulo.
 
@@ -69,5 +74,5 @@ def make_pd_controller(dp, params, dt, kp, kd, q_ref):
         `controller(robot, t, q, qd)` → ndarray de torques
     """
     return lambda robot, t, q, qd: pd_control(
-        robot, t, q, qd, dp=dp, params=params, dt=dt, kp=kp, kd=kd, q_ref=q_ref
+        robot, t, q, qd, dp=dp, params=params, dt=dt, kp=kp, kd=kd, q_ref=q_ref, qd_ref=qd_ref, qdd_ref=qdd_ref
     )
