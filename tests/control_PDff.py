@@ -106,6 +106,7 @@ tg = dp.nofriction(coulomb=True, viscous=False).fdyn(
 # CÁLCULO DE TORQUES APLICADOS (Q_vec)
 # ============================================================
 
+print(q_ref.shape)
 Qm_vec = np.zeros_like(q_ref)
 for i in range(q_ref.shape[0]):
     Qm_vec[i, :] = controller(dp, tg.t[i], tg.q[i], tg.qd[i]) / np.array([PARAMS['N1'], PARAMS['N2']]) 
