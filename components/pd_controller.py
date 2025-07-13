@@ -48,7 +48,7 @@ def pd_control(robot, t, q, qd, *, dp, params, kp, kd, dt, q_ref, qd_ref, qdd_re
     return Q
 
 
-def make_pd_controller(dp, params, dt, kp, kd, q_ref, qd_ref = None, qdd_ref = None):
+def make_pd_controller(dp, params, dt, kp, kd, q_ref,qd_ref = None, qdd_ref = None):
     """
     Crea una función de control PD preconfigurada con parámetros fijos para el doble péndulo.
 

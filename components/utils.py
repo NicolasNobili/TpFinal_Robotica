@@ -202,7 +202,7 @@ def graficar_dinamica(dp, q, qd, t, tau, q_ref=None, qd_ref=None, ):
     # 4. Torques articulares 
     ax_tau.plot(tau[:, 0], label='τ1', color='blue', linewidth=2)
     ax_tau.plot(tau[:, 1], label='τ2', color='orange', linewidth=2)
-    ax_tau.set_title('Torques articulares')
+    ax_tau.set_title('Torques de Actuadores')
     ax_tau.set_xlabel('Tiempo [s]')
     ax_tau.set_ylabel('Torque [Nm]')
     ax_tau.grid(True)
@@ -274,3 +274,21 @@ def graficar_trayectoria(traj):
 
     axs[-1].set_xlabel('Tiempo' if traj.istime else 'Step')
     plt.tight_layout()
+
+
+def generar_vertices_poligono(radio, lados, angulo_inicial=0.0):
+    """
+    Genera las coordenadas de los vértices de un polígono regular inscrito en una circunferencia.
+
+    Parámetros:
+    - radio: float. Radio de la circunferencia circunscrita.
+    - lados: int. Número de lados del polígono.
+    - angulo_inicial: float. Ángulo inicial en radianes (opcional).
+
+    Retorna:
+    - np.ndarray de forma (lados, 2) con coordenadas (x, y) de los vértices.
+    """
+    angulos = np.linspace(0, 2 * np.pi, lados, endpoint=False) + angulo_inicial
+    x = radio * np.cos(angulos)
+    y = radio * np.sin(angulos)
+    return np.stack((x, y), axis=-1)  # Shape: (lados, 2)
