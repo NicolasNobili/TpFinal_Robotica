@@ -72,6 +72,7 @@ def generar_video_trayectoria(dp,tg_q, nombre_archivo='robot_trajectory.mp4',
     ani.save(nombre_archivo, writer='ffmpeg', fps=export_fps)
     print(f"✅ Video guardado como '{nombre_archivo}'")
 
+
 def generar_escalon_suave(T_total, Ts, t_subida, ref_value, q0=0.0):
     """
     Genera una señal escalón con subida lineal desde q0 hasta ref_value.
@@ -98,6 +99,7 @@ def generar_escalon_suave(T_total, Ts, t_subida, ref_value, q0=0.0):
 
     return t, u
 
+
 def valor_referencia_en_t(t_query, t_subida, ref_value):
     """
     Retorna el valor de la señal escalón suave en el tiempo t_query.
@@ -117,7 +119,6 @@ def valor_referencia_en_t(t_query, t_subida, ref_value):
     else:
         return ref_value
     
-
 
 def graficar_dinamica(dp, q, qd, t, tau, q_ref=None, qd_ref=None, ):
     """
@@ -200,32 +201,57 @@ def graficar_dinamica(dp, q, qd, t, tau, q_ref=None, qd_ref=None, ):
     ax_traj.legend()
 
     # 4. Torques articulares 
-    ax_tau.plot(tau[:, 0], label='τ1', color='blue', linewidth=2)
-    ax_tau.plot(tau[:, 1], label='τ2', color='orange', linewidth=2)
+    ax_tau.plot(t,tau[:, 0], label='τ1', color='blue', linewidth=2)
+    ax_tau.plot(t,tau[:, 1], label='τ2', color='orange', linewidth=2)
     ax_tau.set_title('Torques de Actuadores')
     ax_tau.set_xlabel('Tiempo [s]')
     ax_tau.set_ylabel('Torque [Nm]')
     ax_tau.grid(True)
     ax_tau.legend()
 
-    # 5. Error cuadrático medio (fila completa)
-    if q_ref is not None:
-        error_sq_q1 = (q[:, 0] - q_ref[:, 0])**2
-        error_sq_q2 = (q[:, 1] - q_ref[:, 1])**2
-        # rmse_q1 = np.sqrt(np.mean(error_sq_q1))
-        # rmse_q2 = np.sqrt(np.mean(error_sq_q2))
+    # # 5. Error cuadrático medio (fila completa)
+    # if q_ref is not None:
+    #     error_sq_q1 = np.abs(q[:, 0] - q_ref[:, 0])
+    #     error_sq_q2 = np.abs(q[:, 1] - q_ref[:, 1])
+    #     # rmse_q1 = np.sqrt(np.mean(error_sq_q1))
+    #     # rmse_q2 = np.sqrt(np.mean(error_sq_q2))
 
-        ax_rmse.plot(t, error_sq_q1, label='Error² q1', color='blue', linewidth=2)
-        ax_rmse.plot(t, error_sq_q2, label='Error² q2', color='orange', linewidth=2)
-        # ax_rmse.axhline(rmse_q1**2, color='blue', linestyle='--', alpha=0.5, label=f'RMSE q1: {rmse_q1:.4f}')
-        # ax_rmse.axhline(rmse_q2**2, color='orange', linestyle='--', alpha=0.5, label=f'RMSE q2: {rmse_q2:.4f}')
-        ax_rmse.set_title('Error cuadrático entre q y q_ref')
+    #     ax_rmse.plot(t, error_sq_q1, label='Error q1', color='blue', linewidth=2)
+    #     ax_rmse.plot(t, error_sq_q2, label='Error q2', color='orange', linewidth=2)
+    #     # ax_rmse.axhline(rmse_q1**2, color='blue', linestyle='--', alpha=0.5, label=f'RMSE q1: {rmse_q1:.4f}')
+    #     # ax_rmse.axhline(rmse_q2**2, color='orange', linestyle='--', alpha=0.5, label=f'RMSE q2: {rmse_q2:.4f}')
+    #     ax_rmse.set_title('Error Absoluto entre q y q_ref')
+    #     ax_rmse.set_xlabel('Tiempo [s]')
+    #     ax_rmse.set_ylabel('Error² [rad²]')
+    #     ax_rmse.grid(True)
+    #     ax_rmse.legend()
+    # else:
+    #     ax_rmse.set_title('Error cuadrático entre q y q_ref')
+    #     ax_rmse.text(0.5, 0.5, 'Sin q_ref', ha='center', va='center', fontsize=12)
+    #     ax_rmse.set_xticks([])
+    #     ax_rmse.set_yticks([])
+    #     ax_rmse.grid(False)
+
+# 5. Error cartesiano en mm
+    if q_ref is not None:
+        error_xy = []
+
+        for i in range(len(q)):
+            T_real = dp.fkine(q[i])
+            T_ref = dp.fkine(q_ref[i])
+            pos_real = T_real.t[:2]
+            pos_ref = T_ref.t[:2]
+            err = np.linalg.norm(pos_real - pos_ref) * 1000  # de metros a milímetros
+            error_xy.append(err)
+
+        ax_rmse.plot(t, error_xy, label='Error XY', color='purple', linewidth=2)
+        ax_rmse.set_title('Error cartesiano entre trayectoria real y referencia')
         ax_rmse.set_xlabel('Tiempo [s]')
-        ax_rmse.set_ylabel('Error² [rad²]')
+        ax_rmse.set_ylabel('Error [mm]')
         ax_rmse.grid(True)
         ax_rmse.legend()
     else:
-        ax_rmse.set_title('Error cuadrático entre q y q_ref')
+        ax_rmse.set_title('Error cartesiano entre trayectoria real y referencia')
         ax_rmse.text(0.5, 0.5, 'Sin q_ref', ha='center', va='center', fontsize=12)
         ax_rmse.set_xticks([])
         ax_rmse.set_yticks([])
@@ -233,7 +259,6 @@ def graficar_dinamica(dp, q, qd, t, tau, q_ref=None, qd_ref=None, ):
 
     plt.tight_layout()
     plt.show()
-
 
 
 def graficar_trayectoria(traj):

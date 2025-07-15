@@ -121,13 +121,12 @@ def generate_cartesian_trajectory(
     for i, xi in enumerate(x):
         theta = math.atan2(xi[1], xi[0])
         Ti = sm.SE3(xi[0], xi[1], 0) * sm.SE3.Rz(theta)
-        sol = dp.ikine_LM(Ti, q0=q0_ik, tol=1e-4, mask=[1, 1, 0, 0, 0, 0])
+        sol = dp.ikine_LM(Ti, q0=q0_ik, tol=1e-5, mask=[1, 1, 0, 0, 0, 0])
         if not sol.success and verbose:
             print(f"[WARN] IK failed at step {i}")
             time.sleep(1)
         q.append(sol.q)
         q0_ik = sol.q
-        print(i)
     q = np.array(q)
     
     q[:, 0] = np.unwrap(q[:, 0])  # Para q1

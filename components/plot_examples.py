@@ -86,8 +86,7 @@ def bunny_ears_waypoints():
 
 
 def batman_logo_waypoints():
-    # Puntos aproximados para la silueta del logo de Batman estilo Nolan
-    points = np.array([
+    return  np.array([
         [0.0, 0.4],    # centro orejas arriba
         [0.03, 0.3], [0.1, 0.3], [0.15, 0.4], [0.18, 0.5],  # ala derecha arriba
         [0.25, 0.4], [0.4, 0.3], [0.6, 0.0], [0.55, -0.1], [0.45, -0.15], # ala derecha exterior
@@ -97,4 +96,20 @@ def batman_logo_waypoints():
         [-0.45, -0.15], [-0.55, -0.1], [-0.6, 0.0], [-0.4, 0.3], [-0.25, 0.4], # ala izquierda exterior
         [-0.18, 0.5], [-0.15, 0.4], [-0.1, 0.3], [-0.03, 0.3], [0.0, 0.4]   # ala izquierda arriba y cierre
     ])
-    return points
+
+def snake_waypoints(num_rows=20, num_cols=20):
+    x_vals = np.linspace(-0.5, 0.5, num_cols)
+    y_vals = np.linspace(0.5, -0.5, num_rows)
+    
+    points = []
+    for i, y in enumerate(y_vals):
+        if i % 2 == 0:
+            # izquierda a derecha
+            for x in x_vals:
+                points.append((x, y))
+        else:
+            # derecha a izquierda
+            for x in reversed(x_vals):
+                points.append((x, y))
+                
+    return np.array(points)

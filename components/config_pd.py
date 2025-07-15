@@ -34,7 +34,7 @@ Jef = Jm * N**2 + mbar
 # ============================================================
 
 # Frecuencia natural deseada [rad/s]
-wn = 30
+wn = 80
 Bef = 0  # Fricción equivalente (despreciada)
 
 # Ganancias proporcionales y derivativas

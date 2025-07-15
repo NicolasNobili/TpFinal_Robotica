@@ -7,7 +7,6 @@ from components.params import PARAMS
 # DEFINICIÓN DEL ROBOT DOBLE PÉNDULO USANDO DH CON DINÁMICA
 # ========================================================
 
-# Crear robot con 2 articulaciones rotacionales (modelo planar)
 dp = rtb.DHRobot(
     [
         # Eslabón 1
@@ -17,17 +16,19 @@ dp = rtb.DHRobot(
             r=PARAMS['R1'],        # Vector COM relativo al marco del eslabón
             I=PARAMS['I1'],        # Tensor de inercia
             B=PARAMS['B1'],        # Fricción viscosa
-            G=PARAMS['N1']         # Relación de engranajes
+            G=PARAMS['N1'],        # Relación de engranajes
+            Jm = PARAMS['JM2']     # Inercia del motor
         ),
 
         # Eslabón 2
         rtb.RevoluteDH(
-            a=PARAMS['A2'],
-            m=PARAMS['M2'],
-            r=PARAMS['R2'],
-            I=PARAMS['I2'],
-            B=PARAMS['B2'],
-            G=PARAMS['N2']
+            a=PARAMS['A2'],        # Longitud del eslabón
+            m=PARAMS['M2'],        # Masa del eslabón
+            r=PARAMS['R2'],        # Vector COM relativo al marco del eslabón
+            I=PARAMS['I2'],        # Tensor de inercia
+            B=PARAMS['B2'],        # Fricción viscosa
+            G=PARAMS['N2'],        # Relación de engranajes
+            Jm = PARAMS['JM2']     # Inercia del motor
         )
     ],
     gravity=np.array([0, -9.8, 0]),  # Gravedad actuando hacia -Y

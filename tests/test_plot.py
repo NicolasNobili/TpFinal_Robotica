@@ -26,20 +26,21 @@ from components import plot_examples
 # ============================================================
 
 # Parámetros generales
-dt = 0.002                 # Paso de integración [s]
+dt = 0.002                      # Paso de integración [s]
 # dt = 0.001
 
 x0_cart = [0.5657 , 0.0]   # Posición inicial cartesiana
 q0 = np.array([-np.pi/4, np.pi/2])
 qd0  = np.zeros((2,))
-qdmax = [0.2, 0.2]    # Velocidades máximas (m/s)
+qdmax = [0.5, 0.5]    # Velocidades máximas (m/s)
 
 # ============================================================
 # GENERACIÓN DE TAYECTORIA
 # ============================================================
 
 # Puntos por los que debe pasar el efector (en XY)
-waypoints = generar_vertices_poligono(0.5,4,angulo_inicial=np.pi/4)
+# waypoints = generar_vertices_poligono(0.7,4,angulo_inicial=np.pi/4)
+waypoints = plot_examples.snake_waypoints()
 waypoints = np.vstack([waypoints, waypoints[0]])
 waypoints = np.vstack([waypoints,x0_cart])
 # x0_cart = waypoints[0]
@@ -59,7 +60,7 @@ traj,q_ref,qd_ref,qdd_ref = tg.generate_cartesian_trajectory(
 x = traj.s[:, 0]  # coordenada X
 y = traj.s[:, 1]  # coordenada Y
 
-# Graficar trayectoria
+# # Graficar trayectoria
 # plt.figure(figsize=(6, 6))
 # plt.plot(x, y, label='Trayectoria deseada (XY)', color='blue', linewidth=2)
 # plt.scatter(*zip(*waypoints), color='red', marker='x', s=80, label='Waypoints')  # si están en XY
@@ -117,7 +118,7 @@ for i in range(q_ref.shape[0]):
 generar_video_trayectoria(
     dp,
     tg.q,
-    nombre_archivo=os.path.join('videos', 'trayectoria_controlPDff_cuadrado.mp4'),
+    nombre_archivo=os.path.join('videos', 'trayectoria_prueba1_poligono.mp4'),
     export_fps=60,
     sim_dt=tg.t[1] - tg.t[0],
     l1=PARAMS['A1'],
