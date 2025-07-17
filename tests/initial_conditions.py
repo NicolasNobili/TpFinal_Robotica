@@ -16,8 +16,6 @@ print("Modelo del robot:")
 print(dp)
 
 print("\nParámetros dinámicos del robot:")
-print(dp.dynamics())
-
 # ===============================================================================
 # TEST 1: Dinámica libre sin torque aplicado. Respuesta a condiciones iniciales
 # ===============================================================================
@@ -37,7 +35,7 @@ tg = dp.nofriction(coulomb=True, viscous=True).fdyn(
 generar_video_trayectoria(
     dp,
     tg.q,
-    nombre_archivo=os.path.join('videos','trayectoria_test1_NoB.mp4'),
+    nombre_archivo=os.path.join('videos','condiciones_iniciales.mp4'),
     export_fps=60,
     sim_dt=tg.t[1] - tg.t[0],
     l1=PARAMS['A1'],

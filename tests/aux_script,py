@@ -15,3 +15,9 @@ from components.dp_model import dp
 from components import pd_controller
 
 print(PARAMS)
+
+q = np.array([np.pi/2,-np.pi/2])
+
+T = dp.fkine(q)
+
+print(T)

@@ -118,7 +118,7 @@ for i in range(q_ref.shape[0]):
 generar_video_trayectoria(
     dp,
     tg.q,
-    nombre_archivo=os.path.join('videos', 'trayectoria_prueba1_poligono.mp4'),
+    nombre_archivo=os.path.join('videos', 'validacion.mp4'),
     export_fps=60,
     sim_dt=tg.t[1] - tg.t[0],
     l1=PARAMS['A1'],

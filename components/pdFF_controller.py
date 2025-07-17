@@ -1,6 +1,6 @@
 import numpy as np
 
-def pdFF_control(robot, t, q, qd, *, dp, params, kp, kd, dt, q_ref, qd_ref, qdd_ref):
+def pdFF_control(robot, t, q, qd, *, dp, params, kp, kd, dt, q_ref, qd_ref, qdd_ref,tau_p = None, t_p = None):
     """
     Controlador PD para seguimiento de trayectoria articular con compensación de gravedad.
 
@@ -48,12 +48,19 @@ def pdFF_control(robot, t, q, qd, *, dp, params, kp, kd, dt, q_ref, qd_ref, qdd_
 
     U_act = np.dot(kp, error) + np.dot(kd, deriv) + (1 / (N * KM)) * G
 
-    Q_act = N * KM * U_act
+    Q = N * KM * U_act
 
-    return Q_act
+    # Perturbacion:
+    if tau_p and t_p:
+        tau_p1 = tau_p[0] if t_p[0]<t<t_p[1] else 0
+        tau_p2 = tau_p[1] if t_p[0]<t<t_p[1] else 0
+
+        Q = Q + N * np.array([tau_p1,tau_p2])
+
+    return Q
 
 
-def make_pdFF_controller(dp, params, dt, kp, kd, q_ref, qd_ref, qdd_ref):
+def make_pdFF_controller(dp, params, dt, kp, kd, q_ref, qd_ref, qdd_ref, tau_p=None,t_p=None):
     """
     Crea una función de control PD con compensación de gravedad preconfigurada.
 
@@ -78,5 +85,5 @@ def make_pdFF_controller(dp, params, dt, kp, kd, q_ref, qd_ref, qdd_ref):
         Función de control con interfaz (robot, t, q, qd) → torques.
     """
     return lambda robot, t, q, qd: pdFF_control(
-        robot, t, q, qd, dp=dp, params=params, dt=dt, kp=kp, kd=kd, q_ref=q_ref, qd_ref=qd_ref, qdd_ref=qdd_ref
+        robot, t, q, qd, dp=dp, params=params, dt=dt, kp=kp, kd=kd, q_ref=q_ref, qd_ref=qd_ref, qdd_ref=qdd_ref, tau_p=tau_p,t_p=t_p
     )

@@ -27,7 +27,6 @@ from components import plot_examples
 
 # Parámetros generales
 dt = 0.002                 # Paso de integración [s]
-# dt = 0.001
 
 x0_cart = [0.5657 , 0.0]   # Posición inicial cartesiana
 q0 = np.array([-np.pi/4, np.pi/2])
@@ -39,7 +38,7 @@ qdmax = [0.2, 0.2]    # Velocidades máximas (m/s)
 # ============================================================
 
 # Puntos por los que debe pasar el efector (en XY)
-waypoints = generar_vertices_poligono(0.5,4,angulo_inicial=np.pi/4)
+waypoints = generar_vertices_poligono(0.7,4,angulo_inicial=np.pi/4)
 waypoints = np.vstack([waypoints, waypoints[0]])
 waypoints = np.vstack([waypoints,x0_cart])
 # x0_cart = waypoints[0]
@@ -85,7 +84,9 @@ controller = pdFF_controller.make_pdFF_controller(
     kd=config_pd.kd,
     q_ref=q_ref,
     qd_ref= qd_ref,
-    qdd_ref=qdd_ref
+    qdd_ref=qdd_ref,
+    tau_p=[-0.4,-0.4],
+    t_p=[19,23]
 )
 
 # ============================================================

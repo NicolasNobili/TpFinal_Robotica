@@ -27,7 +27,6 @@ from components import plot_examples
 
 # Parámetros generales
 dt = 0.002                      # Paso de integración [s]
-# dt = 0.001
 
 x0_cart = [0.5657 , 0.0]   # Posición inicial cartesiana
 q0 = np.array([-np.pi/4, np.pi/2])
@@ -84,7 +83,9 @@ controller = pd_controller.make_pd_controller(
     dt=dt,
     kp=config_pd.kp,
     kd=config_pd.kd,
-    q_ref=q_ref
+    q_ref=q_ref,
+    tau_p=[-0.4,-0.4],
+    t_p=[19,23]
 )
 
 # ============================================================

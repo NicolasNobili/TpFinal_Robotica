@@ -281,14 +281,13 @@ def graficar_trayectoria(traj):
     axs[1].set_title('Velocidad (qd)')
     axs[2].set_title('Aceleración (qdd)')
 
-    # Asegurar que todo está en forma (m, n) aunque sea (m,)
     def plot_data(ax, t, data, ylabel):
         if data is None:
             ax.set_visible(False)
             return
         data = data if data.ndim > 1 else data[:, None]
         for i in range(data.shape[1]):
-            ax.plot(t, data[:, i], label=f'Joint {i+1}')
+            ax.plot(t, data[:, i], label=f'Joint {i+1}', linewidth=2.5)  # Línea más gruesa
         ax.set_ylabel(ylabel)
         ax.legend()
         ax.grid(True)
@@ -299,7 +298,7 @@ def graficar_trayectoria(traj):
 
     axs[-1].set_xlabel('Tiempo' if traj.istime else 'Step')
     plt.tight_layout()
-
+    plt.show()
 
 def generar_vertices_poligono(radio, lados, angulo_inicial=0.0):
     """
